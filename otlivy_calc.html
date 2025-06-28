@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Калькулятор отливов</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 1rem;
+      background: #f6f6f6;
+    }
+    .calc-box {
+      background: #fff;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      margin-bottom: 2rem;
+    }
+    label {
+      display: block;
+      margin-top: 0.5rem;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.2rem;
+    }
+    button {
+      margin-top: 1rem;
+      padding: 0.7rem;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      width: 100%;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h2>Калькулятор стоимости отливов</h2>
+
+  <div class="calc-box">
+    <label>Материал
+      <select id="material">
+        <option value="ц">Ц</option>
+        <option value="п">П</option>
+      </select>
+    </label>
+
+    <label>Толщина (мм)
+      <select id="thickness">
+        <option value="0.45">0.45</option>
+        <option value="0.5">0.5</option>
+        <option value="0.7">0.7</option>
+      </select>
+    </label>
+
+    <label>Длина изделия (м)
+      <input type="number" step="0.01" id="length" value="2">
+    </label>
+
+    <label>Кол-во штук
+      <input type="number" id="quantity" value="1">
+    </label>
+
+    <label>Кол-во гибов
+      <input type="number" id="bends" value="2">
+    </label>
+
+    <label>
+      <input type="checkbox" id="painting"> Доп. покраска (+15%)
+    </label>
+
+    <button onclick="addItem()">Добавить позицию</button>
+  </div>
+
+  <h3>Смета</h3>
+  <table id="result-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Материал</th>
+        <th>Толщина</th>
+        <th>Длина</th>
+        <th>Гибов</th>
+        <th>Штук</th>
+        <th>Покраска</th>
+        <th>Сумма (₽)</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+<script>
+const prices = {
+  "ц": {
+    "0.5": 440,
+    "0.7": 570
+  },
+  "п": {
+    "0.45": 570,
+    "0.5": 620,
+    "0.7": 750
+  }
+};
+
+let counter = 1;
+
+function getBendPrice(length) {
+  if (length <= 2) return 50;
+  return Math.round(50 * (length / 2));
+}
+
+function addItem() {
+  const mat = document.getElementById('material').value;
+  const th = document.getElementById('thickness').value;
+  const len = parseFloat(document.getElementById('length').value);
+  const qty = parseInt(document.getElementById('quantity').value);
+  const bends = parseInt(document.getElementById('bends').value);
+  const paint = document.getElementById('painting').checked;
+
+  const basePrice = prices[mat]?.[th] || 0;
+  const bendPrice = getBendPrice(len);
+
+  let unitPrice = basePrice * len + bends * bendPrice;
+  if (paint) unitPrice *= 1.15;
+
+  const total = Math.round(unitPrice * qty);
+
+  const row = `<tr>
+    <td>${counter++}</td>
+    <td>${mat}</td>
+    <td>${th}</td>
+    <td>${len}</td>
+    <td>${bends}</td>
+    <td>${qty}</td>
+    <td>${paint ? 'Да' : 'Нет'}</td>
+    <td>${total}</td>
+  </tr>`;
+
+  document.querySelector('#result-table tbody').insertAdjacentHTML('beforeend', row);
+}
+</script>
+</body>
+</html>
