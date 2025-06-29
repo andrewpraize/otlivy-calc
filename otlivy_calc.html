@@ -278,7 +278,7 @@
         const materialPrices = {
             'цинк_0.5': 572,
             'цинк_0.7': 741,
-            'цинк_0.55': 741,
+            'цинк_0.45': 741,
             'полимер_0.5': 806,
             'полимер_0.7': 975
         };
@@ -412,7 +412,6 @@
                 thicknessSelect.innerHTML += `
                     <option value="0.5">0.5 мм</option>
                     <option value="0.7">0.7 мм</option>
-                    <option value="0.45">0.45 мм</option>
                 `;
                 paintGroup.style.display = 'none';
                 document.getElementById(`paint-${productId}`).checked = false;
@@ -420,7 +419,7 @@
                 thicknessSelect.innerHTML += `
                     <option value="0.5">0.5 мм</option>
                     <option value="0.7">0.7 мм</option>
-                    <option value="0.55">0.55 мм</option>
+                    <option value="0.45">0.45 мм</option>
                 `;
                 paintGroup.style.display = 'block';
             }
