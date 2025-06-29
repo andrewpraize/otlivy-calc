@@ -1,132 +1,586 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Калькулятор сметы</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body { font-family: sans-serif; background: #f8f8fa; margin: 0; padding: 40px;}
-    form { max-width: 500px; margin: auto; background: #fff; padding: 24px 28px 20px 28px; border-radius: 14px; box-shadow: 0 2px 16px #0001;}
-    label { display: block; margin: 18px 0 6px;}
-    input[type="text"], input[type="number"], select { width: 100%; padding: 6px 8px; margin-top: 3px; border-radius: 6px; border: 1px solid #bbb;}
-    #sides-inputs label { margin: 6px 0 0;}
-    .results { margin-top: 24px; background: #f3f7fb; padding: 16px; border-radius: 10px; }
-    .results span { font-weight: bold; }
-    .title {font-size: 1.4em; margin-bottom: 18px; text-align:center;}
-    .inline { display: inline-block; margin-right: 14px;}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор сметы</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px 10px;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .product-section {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4facfe;
+        }
+
+        .product-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+            font-size: 14px;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            accent-color: #4facfe;
+        }
+
+        .sides-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .side-input {
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .result-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 16px;
+            margin: 20px 0;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .result-total {
+            border-top: 2px solid rgba(255, 255, 255, 0.3);
+            padding-top: 15px;
+            margin-top: 15px;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #2c3e50;
+        }
+
+        .btn-whatsapp {
+            background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .sides-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-  <form id="calc-form" autocomplete="off">
-    <div class="title">Калькулятор расчёта сметы</div>
-    <label>Наименование изделия
-      <input type="text" id="name" placeholder="Например: Откос, Отлив, Планка...">
-    </label>
-    <label>Материал
-      <select id="material">
-        <option value="polymer">Полимер</option>
-        <option value="zinc">Цинк</option>
-      </select>
-    </label>
-    <label>Толщина (мм)
-      <select id="thickness"></select>
-    </label>
-    <label>Длина изделия (м)
-      <input type="number" id="length" max="3" min="0.1" step="0.01" value="1">
-    </label>
-    <label id="paint-label" style="display:none;">
-      <input type="checkbox" id="paint"> Покраска
-    </label>
-    <label>Количество изделий
-      <input type="number" id="qty" min="1" max="500" value="1">
-    </label>
-    <label>Количество сторон
-      <input type="number" id="sides-count" min="1" max="10" value="4">
-    </label>
-    <div id="sides-inputs"></div>
+    <div class="container">
+        <div class="header">
+            <h1>🧮 Калькулятор сметы</h1>
+            <p>Точный расчет стоимости изделий</p>
+        </div>
+        
+        <div class="content">
+            <div id="products-container"></div>
+            
+            <button class="btn btn-primary" onclick="addProduct()" id="add-product-btn">
+                ➕ Добавить изделие
+            </button>
 
-    <div class="results">
-      <div>Общая площадь (м²): <span id="total-area">0.00</span></div>
-      <div>Стоимость материала: <span id="mat-price">0</span> ₽</div>
-      <div>Стоимость с покраской: <span id="mat-price-painted">0</span> ₽</div>
-      <div>Стоимость гиба: <span id="bend-price">0</span> ₽</div>
+            <div class="result-section" id="result-section">
+                <h3>📊 Итоговый расчет</h3>
+                <div id="total-results"></div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-success" onclick="downloadCalculation()">
+                    📥 Скачать расчет
+                </button>
+                <button class="btn btn-whatsapp" onclick="sendToWhatsApp()">
+                    📱 Отправить в WhatsApp
+                </button>
+            </div>
+        </div>
     </div>
-  </form>
 
-  <script>
-    // Вставь свои цены!
-    const THICKNESS_OPTIONS = {
-      polymer: [0.5, 0.7, 0.45],
-      zinc: [0.5, 0.7, 0.55]
-    };
-    const MATERIAL_PRICES = {
-      polymer: {0.5: 600, 0.7: 800, 0.45: 540},  // Примерные цены за 1м²
-      zinc:    {0.5: 400, 0.7: 500, 0.55: 460}
-    };
-    const PAINT_PRICE = {zinc: 120};   // Цена покраски за 1м²
-    const BEND_PRICE = 50;             // Стоимость гиба за изделие
+    <script>
+        let productCount = 0;
+        const maxProducts = 10;
+        
+        // Цены материалов
+        const materialPrices = {
+            'цинк_0.5': 572,
+            'цинк_0.7': 741,
+            'цинк_0.55': 741,
+            'полимер_0.5': 806,
+            'полимер_0.7': 975
+        };
+        
+        const paintPricePerSqm = 750;
+        const bendCostBase = 50;
 
-    // ---- Логика ----
-    function updateThicknessOptions() {
-      const material = document.getElementById('material').value;
-      const thicknessSelect = document.getElementById('thickness');
-      thicknessSelect.innerHTML = '';
-      THICKNESS_OPTIONS[material].forEach(val => {
-        let opt = document.createElement('option');
-        opt.value = val;
-        opt.textContent = val;
-        thicknessSelect.appendChild(opt);
-      });
-      // Покраска чекбокс (только для цинка)
-      document.getElementById('paint-label').style.display = (material === 'zinc') ? '' : 'none';
-      recalc(); // Обновить расчёт при смене материала/толщины
-    }
+        function createProduct() {
+            productCount++;
+            const productDiv = document.createElement('div');
+            productDiv.className = 'product-section';
+            productDiv.id = `product-${productCount}`;
+            
+            productDiv.innerHTML = `
+                <div class="product-title">
+                    🔧 Изделие ${productCount}
+                    ${productCount > 1 ? `<button onclick="removeProduct(${productCount})" style="margin-left: auto; background: #e74c3c; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer;">✕</button>` : ''}
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Наименование</label>
+                    <input type="text" class="form-input" id="name-${productCount}" placeholder="Введите наименование">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Материал</label>
+                    <select class="form-select" id="material-${productCount}" onchange="updateThickness(${productCount})">
+                        <option value="">Выберите материал</option>
+                        <option value="полимер">Полимер</option>
+                        <option value="цинк">Цинк</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Толщина (мм)</label>
+                    <select class="form-select" id="thickness-${productCount}" onchange="calculate()">
+                        <option value="">Выберите толщину</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Длина (м)</label>
+                    <input type="number" class="form-input" id="length-${productCount}" 
+                           max="3" step="0.01" placeholder="До 3 метров" onchange="calculate()">
+                </div>
+                
+                <div class="form-group" id="paint-group-${productCount}" style="display: none;">
+                    <div class="checkbox-group">
+                        <input type="checkbox" class="checkbox" id="paint-${productCount}" onchange="calculate()">
+                        <label class="form-label">Покраска</label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Количество изделий</label>
+                    <input type="number" class="form-input" id="quantity-${productCount}" 
+                           min="1" placeholder="Количество" onchange="calculate()">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Количество сторон</label>
+                    <input type="number" class="form-input" id="sides-count-${productCount}" 
+                           min="1" max="10" placeholder="Количество сторон" onchange="updateSides(${productCount})">
+                </div>
+                
+                <div class="sides-container" id="sides-container-${productCount}"></div>
+                
+                <div class="result-section" id="product-result-${productCount}" style="margin-top: 20px;">
+                    <div id="product-calculation-${productCount}">
+                        <div class="result-item">
+                            <span>Общая площадь:</span>
+                            <span id="area-${productCount}">0 м²</span>
+                        </div>
+                        <div class="result-item">
+                            <span>Стоимость материала:</span>
+                            <span id="material-cost-${productCount}">0 ₽</span>
+                        </div>
+                        <div class="result-item" id="paint-cost-row-${productCount}" style="display: none;">
+                            <span>Стоимость покраски:</span>
+                            <span id="paint-cost-${productCount}">0 ₽</span>
+                        </div>
+                        <div class="result-item">
+                            <span>Стоимость работ:</span>
+                            <span id="work-cost-${productCount}">0 ₽</span>
+                        </div>
+                        <div class="result-total">
+                            <span>Итого за изделие:</span>
+                            <span id="product-total-${productCount}">0 ₽</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            return productDiv;
+        }
 
-    function updateSidesInputs() {
-      let n = parseInt(document.getElementById('sides-count').value, 10) || 0;
-      let div = document.getElementById('sides-inputs');
-      div.innerHTML = '';
-      for (let i=1; i<=n; i++) {
-        div.innerHTML += `<label>Сторона ${i} (см): <input type="number" class="side-len" min="0" value="10"></label>`;
-      }
-      recalc();
-    }
+        function addProduct() {
+            if (productCount >= maxProducts) {
+                alert(`Максимальное количество изделий: ${maxProducts}`);
+                return;
+            }
+            
+            const container = document.getElementById('products-container');
+            const productDiv = createProduct();
+            container.appendChild(productDiv);
+            
+            if (productCount >= maxProducts) {
+                document.getElementById('add-product-btn').style.display = 'none';
+            }
+            
+            calculate();
+        }
 
-    function recalc() {
-      // Считаем сумму сторон (метры)
-      let sides = [...document.querySelectorAll('.side-len')].map(input => +input.value || 0);
-      let sidesSumMeters = sides.reduce((a,b)=>a+b,0) / 100;
-      let length = +document.getElementById('length').value || 0;
-      let qty = +document.getElementById('qty').value || 1;
-      // Формула площади
-      let area = sidesSumMeters * length * qty;
-      document.getElementById('total-area').textContent = area.toFixed(2);
+        function removeProduct(id) {
+            const product = document.getElementById(`product-${id}`);
+            if (product) {
+                product.remove();
+                document.getElementById('add-product-btn').style.display = 'block';
+                calculate();
+            }
+        }
 
-      let material = document.getElementById('material').value;
-      let thickness = document.getElementById('thickness').value;
-      let matPricePerM2 = MATERIAL_PRICES[material][thickness] || 0;
-      let matCost = area * matPricePerM2;
-      document.getElementById('mat-price').textContent = matCost.toFixed(0);
+        function updateThickness(productId) {
+            const material = document.getElementById(`material-${productId}`).value;
+            const thicknessSelect = document.getElementById(`thickness-${productId}`);
+            const paintGroup = document.getElementById(`paint-group-${productId}`);
+            
+            thicknessSelect.innerHTML = '<option value="">Выберите толщину</option>';
+            
+            if (material === 'полимер') {
+                thicknessSelect.innerHTML += `
+                    <option value="0.5">0.5 мм</option>
+                    <option value="0.7">0.7 мм</option>
+                    <option value="0.45">0.45 мм</option>
+                `;
+                paintGroup.style.display = 'none';
+                document.getElementById(`paint-${productId}`).checked = false;
+            } else if (material === 'цинк') {
+                thicknessSelect.innerHTML += `
+                    <option value="0.5">0.5 мм</option>
+                    <option value="0.7">0.7 мм</option>
+                    <option value="0.55">0.55 мм</option>
+                `;
+                paintGroup.style.display = 'block';
+            }
+            
+            calculate();
+        }
 
-      // Стоимость с покраской
-      let paint = (material==='zinc' && document.getElementById('paint').checked) ? PAINT_PRICE[material] : 0;
-      let matCostPainted = matCost + area * paint;
-      document.getElementById('mat-price-painted').textContent = matCostPainted.toFixed(0);
+        function updateSides(productId) {
+            const sidesCount = parseInt(document.getElementById(`sides-count-${productId}`).value) || 0;
+            const container = document.getElementById(`sides-container-${productId}`);
+            
+            container.innerHTML = '';
+            
+            for (let i = 1; i <= sidesCount; i++) {
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.className = 'side-input';
+                input.id = `side-${productId}-${i}`;
+                input.placeholder = `Сторона ${i} (мм)`;
+                input.min = '0';
+                input.step = '0.1';
+                input.onchange = calculate;
+                container.appendChild(input);
+            }
+            
+            calculate();
+        }
 
-      // Гиб
-      let bendCost = Math.max(BEND_PRICE * qty, 50); // Не ниже 50р
-      document.getElementById('bend-price').textContent = bendCost.toFixed(0);
-    }
+        function calculate() {
+            let totalArea = 0;
+            let totalMaterialCost = 0;
+            let totalPaintCost = 0;
+            let totalWorkCost = 0;
+            let totalCost = 0;
+            
+            for (let i = 1; i <= productCount; i++) {
+                const productDiv = document.getElementById(`product-${i}`);
+                if (!productDiv) continue;
+                
+                const material = document.getElementById(`material-${i}`)?.value;
+                const thickness = document.getElementById(`thickness-${i}`)?.value;
+                const length = parseFloat(document.getElementById(`length-${i}`)?.value) || 0;
+                const quantity = parseInt(document.getElementById(`quantity-${i}`)?.value) || 0;
+                const sidesCount = parseInt(document.getElementById(`sides-count-${i}`)?.value) || 0;
+                const isPainted = document.getElementById(`paint-${i}`)?.checked || false;
+                
+                if (!material || !thickness || !length || !quantity || !sidesCount) {
+                    continue;
+                }
+                
+                // Рассчитываем периметр в мм
+                let perimeter = 0;
+                for (let j = 1; j <= sidesCount; j++) {
+                    const sideInput = document.getElementById(`side-${i}-${j}`);
+                    if (sideInput) {
+                        perimeter += parseFloat(sideInput.value) || 0;
+                    }
+                }
+                
+                // Площадь в м² (переводим мм в м)
+                const area = (perimeter / 1000) * length * quantity;
+                
+                // Стоимость материала
+                const materialKey = `${material}_${thickness}`;
+                const materialPrice = materialPrices[materialKey] || 0;
+                const materialCost = area * materialPrice;
+                
+                // Стоимость покраски
+                const paintCost = isPainted ? area * paintPricePerSqm : 0;
+                
+                // Стоимость работ (гибов)
+                let bendCost = bendCostBase;
+                if (length > 2) {
+                    bendCost = (bendCostBase / 20) * length;
+                    if (bendCost < bendCostBase) bendCost = bendCostBase;
+                }
+                const workCost = sidesCount * bendCost * 1.1 * quantity;
+                
+                const productTotal = materialCost + paintCost + workCost;
+                
+                // Обновляем отображение для продукта
+                document.getElementById(`area-${i}`).textContent = `${area.toFixed(2)} м²`;
+                document.getElementById(`material-cost-${i}`).textContent = `${Math.round(materialCost)} ₽`;
+                document.getElementById(`work-cost-${i}`).textContent = `${Math.round(workCost)} ₽`;
+                document.getElementById(`product-total-${i}`).textContent = `${Math.round(productTotal)} ₽`;
+                
+                const paintCostRow = document.getElementById(`paint-cost-row-${i}`);
+                const paintCostSpan = document.getElementById(`paint-cost-${i}`);
+                if (isPainted) {
+                    paintCostRow.style.display = 'flex';
+                    paintCostSpan.textContent = `${Math.round(paintCost)} ₽`;
+                } else {
+                    paintCostRow.style.display = 'none';
+                }
+                
+                // Добавляем к общим суммам
+                totalArea += area;
+                totalMaterialCost += materialCost;
+                totalPaintCost += paintCost;
+                totalWorkCost += workCost;
+                totalCost += productTotal;
+            }
+            
+            // Обновляем общий итог
+            const totalResults = document.getElementById('total-results');
+            totalResults.innerHTML = `
+                <div class="result-item">
+                    <span>Общая площадь:</span>
+                    <span>${totalArea.toFixed(2)} м²</span>
+                </div>
+                <div class="result-item">
+                    <span>Стоимость материалов:</span>
+                    <span>${Math.round(totalMaterialCost)} ₽</span>
+                </div>
+                ${totalPaintCost > 0 ? `
+                <div class="result-item">
+                    <span>Стоимость покраски:</span>
+                    <span>${Math.round(totalPaintCost)} ₽</span>
+                </div>` : ''}
+                <div class="result-item">
+                    <span>Стоимость работ:</span>
+                    <span>${Math.round(totalWorkCost)} ₽</span>
+                </div>
+                <div class="result-total">
+                    <span>ИТОГО:</span>
+                    <span>${Math.round(totalCost)} ₽</span>
+                </div>
+            `;
+        }
 
-    // События
-    document.getElementById('material').addEventListener('change', updateThicknessOptions);
-    document.getElementById('sides-count').addEventListener('input', updateSidesInputs);
-    document.getElementById('calc-form').addEventListener('input', recalc);
+        function downloadCalculation() {
+            const results = generateCalculationText();
+            const blob = new Blob([results], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `смета_${new Date().toLocaleDateString('ru')}.txt`;
+            link.click();
+        }
 
-    // Старт
-    updateThicknessOptions();
-    updateSidesInputs();
-    recalc();
-  </script>
+        function sendToWhatsApp() {
+            const results = generateCalculationText();
+            const encodedText = encodeURIComponent(results);
+            const whatsappUrl = `https://wa.me/?text=${encodedText}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function generateCalculationText() {
+            let text = '📋 РАСЧЕТ СМЕТЫ\n';
+            text += `Дата: ${new Date().toLocaleDateString('ru')}\n\n`;
+            
+            for (let i = 1; i <= productCount; i++) {
+                const productDiv = document.getElementById(`product-${i}`);
+                if (!productDiv) continue;
+                
+                const name = document.getElementById(`name-${i}`)?.value || `Изделие ${i}`;
+                const material = document.getElementById(`material-${i}`)?.value;
+                const thickness = document.getElementById(`thickness-${i}`)?.value;
+                const length = document.getElementById(`length-${i}`)?.value;
+                const quantity = document.getElementById(`quantity-${i}`)?.value;
+                const isPainted = document.getElementById(`paint-${i}`)?.checked;
+                
+                if (!material || !thickness) continue;
+                
+                text += `🔧 ${name}\n`;
+                text += `Материал: ${material} ${thickness}мм\n`;
+                text += `Длина: ${length}м\n`;
+                text += `Количество: ${quantity}шт\n`;
+                if (isPainted) text += `Покраска: Да\n`;
+                
+                const area = document.getElementById(`area-${i}`)?.textContent;
+                const materialCost = document.getElementById(`material-cost-${i}`)?.textContent;
+                const workCost = document.getElementById(`work-cost-${i}`)?.textContent;
+                const productTotal = document.getElementById(`product-total-${i}`)?.textContent;
+                
+                text += `Площадь: ${area}\n`;
+                text += `Стоимость материала: ${materialCost}\n`;
+                text += `Стоимость работ: ${workCost}\n`;
+                text += `Итого за изделие: ${productTotal}\n\n`;
+            }
+            
+            const totalResults = document.getElementById('total-results').textContent;
+            text += '💰 ОБЩИЙ ИТОГ:\n';
+            text += totalResults.replace(/\s+/g, ' ').trim();
+            
+            return text;
+        }
+
+        // Инициализация
+        addProduct();
+    </script>
 </body>
 </html>
