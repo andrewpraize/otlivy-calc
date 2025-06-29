@@ -512,10 +512,9 @@
                 const paintCost = isPainted ? area * paintPricePerSqm : 0;
                 
                 // Стоимость работ (гибов)
-                let bendCost = bendCostBase;
-                if (length > 2) {
-                    bendCost = (bendCostBase / 20) * length;
-                    if (bendCost < bendCostBase) bendCost = bendCostBase;
+                let bendCost = (bendCostBase / 20) * length; // (50/20) * метраж
+                if (bendCost < bendCostBase) {
+                    bendCost = bendCostBase; // Минимум 50 рублей
                 }
                 const workCost = sidesCount * bendCost * 1.1 * quantity;
                 
